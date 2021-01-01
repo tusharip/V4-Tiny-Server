@@ -78,6 +78,6 @@ def mobile():
         with open(path2, "rb") as f:
             return base64.b64encode(f.read())
 
-        return render_template("upload.html", img1=path1, img2=path2)
+        
 if __name__ == "__main__":
     app.run(debug=True)
