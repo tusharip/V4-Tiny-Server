@@ -25,7 +25,7 @@ model = Darknet(cfg, imgsz)
 # trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
 # print('Total Parameters: ', total_params)
 # print('Trainable Parameters: ', trainable_params)
-model.load_state_dict(torch.load(weights))
+model.load_state_dict(torch.load(weights,map_location=torch.device('cpu')))
 
 model.to(device).eval()
 app = Flask(__name__)
