@@ -2,6 +2,7 @@ from flask import Flask, request, render_template
 import torch
 from yolov4.demo import detect
 from yolov4.model import Darknet
+import base64
 
 # weights = 'yolov4/weights/yolov4-pacsp.pt'
 weights = './tiny.pt'
@@ -54,6 +55,29 @@ def home():
 
         return render_template("upload.html", img1=path1, img2=path2)
 
+@app.route('/mobile/', methods=['GET', 'POST'])
+def mobile():
+    if request.method == "GET":
+        return render_template("index.html")
+    else:
+        # shutil.rmtree('./static')
+        # os.mkdir('./static')
+        f = request.files["image"]
+        fmat =f.filename.split('.')[-1]
+        path1 = f'./static/img.{fmat}'
+        path2 = f'./static/outputs/img.{fmat}'
 
+        # path1 = f'./static/{f.filename}'
+        # path2 = f'./static/outputs/{f.filename}'
+        f.save(path1)
+
+        detect(model, path1, path2, imgsz, conf_thres, iou_thres, names, colors, device)
+
+
+        
+        with open(path2, "rb") as f:
+            return base64.b64encode(f.read())
+
+        return render_template("upload.html", img1=path1, img2=path2)
 if __name__ == "__main__":
     app.run(debug=True)
